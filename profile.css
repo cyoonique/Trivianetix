@@ -17,8 +17,7 @@ p {
   /* -webkit-text-fill-color: transparent; */
   font-family: 'Luckiest Guy', cursive;
   color: #4e3043;
-  padding: 100px 50px;
-  padding-bottom: 100px;
+  padding: 10px;
 }
 
 .scoreboard {
@@ -27,6 +26,17 @@ p {
   /* background: -webkit-linear-gradient(red,black); */
   /* -webkit-background-clip: text */
   /* -webkit-text-fill-color: transparent; */
+}
+
+.leaderboard {
+  text-align: center;
+  font-size: 25px;
+}
+
+table.center {
+  margin-left:auto; 
+  margin-right:auto;
+  margin-bottom: 40px;
 }
 
 .app {
@@ -87,9 +97,10 @@ p {
 }
 
 select {
-  width: 30%;
-  padding-top: 25px;
-  padding-bottom: 25px;
+  -webkit-appearance: menulist-button;
+  height: 33px;
+  margin: 10px;
+  box-sizing: border-box;
   /* Styles */
   background: linear-gradient(rgba(51, 235, 14, 0.705), rgba(76,49,65,0.7));    
   border-radius: 5px;
@@ -99,19 +110,14 @@ select {
   transition: all 0.3s ease-out;
   /* Font styles */
   color: white;
-  text-shadow: 0 1px 0 rgba(0,0,0,0.3);
-  font-size: 25px;
+  text-shadow: 0 1px 0 rgba(143, 39, 39, 0.3);
+  font-size: 20px;
   font-weight: bold;
-  font-family: 'Luckiest Guy', cursive; 
+  font-family: 'Luckiest Guy', cursive;
 }
-  
+
 .custom-select:hover{
   box-shadow: inset 0 1px rgba(255,255,255,0.2), inset 0 20px 30px rgba(99,64,86,0.5);
   font-weight: bolder;
   font-size: 23px;
 }
- 
- 
- 
-
-

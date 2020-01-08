@@ -197,10 +197,10 @@ class App extends Component {
         {!this.state.gameMode ?
           <React.Fragment>
             <UserInfo username={this.state.username} gameMode={this.state.gameMode} />
-            <Stats stats={this.state.stats} gameMode={this.state.gameMode} />
+            <Stats stats={this.state.stats} correctResponses={this.state.correctResponses} gameMode={this.state.gameMode} />
 
             <select className="custom-select" onChange={this.onHandleClick}>
-              <option value="9" className="topicButton">General Knowledge (default) </option>
+              <option value="9" className="topicButton">General Knowledge</option>
               <option value="10"> Books</option>
               <option value="11"> Film</option>
               <option value="12"> Music</option>
@@ -220,7 +220,7 @@ class App extends Component {
               <option value="26"> Celebrities</option>
               <option value="27"> Animals</option>
             </select>
-            <button onClick={() => this.startGame()}>Play Game</button>
+            <button className="playGameBtn" onClick={() => this.startGame()}>Play Game</button>
           </React.Fragment>
           :
           //*================================================================= */}

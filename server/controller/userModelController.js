@@ -87,8 +87,8 @@ userModelController.updateUser = async (req, res, next) => {
   await db.query(text1)
     .then(response => res.locals.updatedStats = response.rows[0])
     .catch(err => console.log(err));
-  res.locals.games_played = res.locals.updatedStats.games_played + 1;
-  res.locals.correct_answers = res.locals.updatedStats.correct_answers + correctAnswers;
+  res.locals.games_played = Number(res.locals.updatedStats.games_played) + 1;
+  res.locals.correct_answers = Number(res.locals.updatedStats.correct_answers) + correctAnswers;
   const text2 = `
     UPDATE users
     SET games_played = '${res.locals.games_played}', correct_answers = '${res.locals.correct_answers}'
