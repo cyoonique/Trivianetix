@@ -140,7 +140,11 @@ class App extends Component {
     const incorrectResponses = [...this.state.incorrectResponses];
     console.log('User chose the answer: ', e.target.value);
     console.log('The actual correct answer: ', correct);
+<<<<<<< HEAD
     console.log('correctResponses: ', this.state.correctResponses);
+=======
+    console.log('correctResponses: ', correctResponses);
+>>>>>>> 99d35640fb2dd12eec5f4595d9f094b2409c4e6c
     if (choice === correct) {
       correctResponses.push(this.state.question);
     } else {
