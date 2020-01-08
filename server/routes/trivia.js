@@ -15,4 +15,11 @@ trivia.get('/:username/:url', userModelController.findStats, userModelController
     });
 });
 
+
+trivia.get('/:username/:topic/:education', userModelController.getGraphData, (req, res) => {
+    console.log('req.params: ', req.params);
+    res.status(200).json({
+        averageScore: res.locals.averageScore,
+    });
+})
 module.exports = trivia;

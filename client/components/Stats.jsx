@@ -4,7 +4,23 @@ import Table from 'react-bootstrap/Table';
 
 class Stats extends Component {
   componentDidMount() {
+    // fetch(`/getGraphData/${chosentopic}/College`)
+    // .then(res => res.json)
+    // .catch(err => console.log(err))
+
+    // fetch(`/getGraphData/${chosentopic}/HighSchool`)
+    // .then(res => res.json)
+    // .catch(err => console.log(err))
+
+    // fetch(`/getGraphData/${chosentopic}/$PHD`)
+    // .then(res => res.json)
+    // .catch(err => console.log(err))
+
+
+
+
     this.drawChart();
+
   }
   drawChart() {
     const data = [12, 5, 6, 20, 50, 10];
@@ -143,7 +159,7 @@ class Stats extends Component {
             <thead>
               <tr>
                 <th>Ranking</th>
-                <th>Userame     </th>
+                <th>Username     </th>
                 <th>Score</th>
               </tr>
             </thead>

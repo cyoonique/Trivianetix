@@ -20,7 +20,6 @@ app.use(cookieParser());
 app.use('/signup', signupRouter);
 
 app.use('/profile', profileRouter);
-
 app.use('/trivia', triviaRouter);
 
 app.use('/', loginRouter);

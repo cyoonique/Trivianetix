@@ -112,4 +112,30 @@ userModelController.deleteUser = async (req, res, next) => {
   return next();
 };
 
+///run this query to get average score of one educational level for one topic
+userModelController.getGraphData = async (req, res, next) => {
+  const topic = req.params.topic;
+  const educationLevel = req.params.education;
+  const graphQuery = `
+  Select ...`
+
+  await db.query(graphQuery)
+  .then(response => {
+    let gamesPlayed = 0;
+    let TotalScore = 0;
+
+    for (let i = 0; i < response.rows.length; i += 1) {
+      let row = rows[i];
+      gamesPlayed += 1;
+      let numberCorrect = row.correctAnswers * 10;
+      TotalScore += numberCorrect;
+    }
+    let averageScore = TotalScore / gamesPlayed;
+    return res.locals.averageScore = averageScore;
+  })
+
+
+return next();
+}
+
 module.exports = userModelController;
