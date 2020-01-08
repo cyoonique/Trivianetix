@@ -1,11 +1,9 @@
-const db = require('../data/userModel');
-
-const cookieController = {}
+const cookieController = {};
 
 cookieController.setCookie = (req, res, next) => {
-    const { username } = req.body;
-    res.cookie('username', username, {httpOnly: false});
-    next();
+  const { username } = req.body;
+  res.cookie('username', username, {httpOnly: false});
+  return next();
 }
 
 module.exports = cookieController;

@@ -13,7 +13,6 @@ trivia.get('/:username/:url', userModelController.findStats, userModelController
         gamesPlayed: res.locals.stats.games_played,
         correctAnswers: res.locals.stats.correct_answers,
     });
-})
-
+});
 
 module.exports = trivia;
