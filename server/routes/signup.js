@@ -9,12 +9,11 @@ signup.get('/', (req, res) => {
 });
 
 signup.get('/signup.css', (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname, '../../signup.css'))
+    res.status(200).sendFile(path.resolve(__dirname, '../../signup.css'));
 });
 
 signup.post('/', userModelController.createUser, (req, res) => {
     res.status(200).redirect('/');
-})
-
+});
 
 module.exports = signup;

@@ -15,7 +15,7 @@ class GameContainer extends Component {
       answers = [correctAnswer, ...incorrectAnswers];
       answers.forEach((el, i) => {
         const random = Math.floor(Math.random() * 4);
-        [answers[i], answers[random]] = [answers[random], answers[i]]
+        [answers[i], answers[random]] = [answers[random], answers[i]];
       })
     }
     return (
