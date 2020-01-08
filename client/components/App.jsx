@@ -63,13 +63,13 @@ class App extends Component {
           username,
           results,
           stats: { gamesPlayed, correctAnswers },
-        })
+        });
       })
-      .catch((err) => { console.log(err); })
+      .catch((err) => { console.log(err); });
   }
 
   onHandleClick(e) {
-    this.setState({ url: e.target.value })
+    this.setState({ url: e.target.value });
   }
   startGame() {
     if (!this.state.gameMode) {
@@ -84,9 +84,9 @@ class App extends Component {
             results,
             question,
             stats: { gamesPlayed, correctAnswers },
-          })
+          });
         })
-        .catch(err => { console.log(err); })
+        .catch(err => { console.log(err); });
     } else {
       let gameMode = this.state.gameMode;
       let results = [...this.state.results];
@@ -103,7 +103,7 @@ class App extends Component {
         results,
         question,
         choice: 'pending',
-      })
+      });
     }
   }
 
@@ -113,10 +113,10 @@ class App extends Component {
     const correct = this.state.question.correct_answer;
     const correctResponses = [...this.state.correctResponses];
     const incorrectResponses = [...this.state.incorrectResponses];
-    console.log('button value', e.target.value);
-    console.log('correct', correct);
+    console.log('User chose the answer: ', e.target.value);
+    console.log('The actual correct answer: ', correct);
     if (choice === correct) {
-      correctResponses.push(this.state.question)
+      correctResponses.push(this.state.question);
     } else {
       incorrectResponses.push(this.state.question);
     }
@@ -131,7 +131,7 @@ class App extends Component {
       gameMode,
       correctResponses,
       incorrectResponses,
-    })
+    });
   }
 
   sendResponse() {
@@ -150,7 +150,7 @@ class App extends Component {
         const { gamesPlayed, correctAnswers } = data;
         this.setState({
           stats: { gamesPlayed, correctAnswers },
-        })
+        });
       })
       .catch(err => {
         console.log(err);
@@ -170,26 +170,26 @@ class App extends Component {
 
             <select className="custom-select" onChange={this.onHandleClick}>
               <option value="9" className="topicButton">General Knowledge (default) </option>
-              <option value="10" > Books</option>
-              <option value="11" > Film</option>
-              <option value="12" > Music</option>
-              <option value="13" > Musicals and Theater</option>
-              <option value="14" > Television</option>
-              <option value="15" > Video Games</option>
-              <option value="16" > Board Games</option>
-              <option value="17" > Science and Nature</option>
-              <option value="18" > Computers</option>
-              <option value="19" > Mathematics</option>
-              <option value="20">Mythology</option>
-              <option value="21" > Sports</option>
-              <option value="22" > Geography</option>
-              <option value="23" > History</option>
-              <option value="24">Politics</option>
-              <option value="25" > Art</option>
-              <option value="26" > Celebrities</option>
-              <option value="27" > Animals</option>
+              <option value="10"> Books</option>
+              <option value="11"> Film</option>
+              <option value="12"> Music</option>
+              <option value="13"> Musicals and Theater</option>
+              <option value="14"> Television</option>
+              <option value="15"> Video Games</option>
+              <option value="16"> Board Games</option>
+              <option value="17"> Science and Nature</option>
+              <option value="18"> Computers</option>
+              <option value="19"> Mathematics</option>
+              <option value="20"> Mythology</option>
+              <option value="21"> Sports</option>
+              <option value="22"> Geography</option>
+              <option value="23"> History</option>
+              <option value="24"> Politics</option>
+              <option value="25"> Art</option>
+              <option value="26"> Celebrities</option>
+              <option value="27"> Animals</option>
             </select>
-            <button onClick={() => this.startGame()}>Play Game </button>
+            <button onClick={() => this.startGame()}>Play Game</button>
           </React.Fragment>
           :
           //*================================================================= */}
