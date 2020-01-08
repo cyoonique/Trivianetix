@@ -10,6 +10,19 @@ class Stats extends Component {
     let gameMode = this.props.gameMode;
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br/>Your Score For This Game: {PercentageRightForThisGame}%</p>;
     console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
+    const category = ['General Knowledge', 'Books', 'Film', 'Music', 'Musicals and Theater', 'Television', 'Video Games', 'Board Games', 'Science and Nature', 'Computers', 'Mathematics', 'Mythology', 'Sports', 'Geography', 'History', 'Politics', 'Art', 'Celebrities', 'Animals'];
+
+    fetch(`/trivia/${this.state.username}/${this.state.url}`)
+    .then(res => res.json())
+    .then(data => {
+      const { username, results, gamesPlayed, correctAnswers } = data;
+      this.setState({
+        username,
+        results,
+        stats: { gamesPlayed, correctAnswers },
+      });
+    })
+    .catch((err) => { console.log(err); });
     
     // TODO: pull leaderBoard data from MongoDB
     const leaderBoard = [];
@@ -17,8 +30,9 @@ class Stats extends Component {
       let eachLeader = (
         <tr>
           <td>{i}</td>
-          <td>Cat</td>
-          <td>{i * 10}</td>
+          <td>{username_fk}</td>
+          <td>{category[categor_fk - 9]}</td>
+          <td>{score}</td>
         </tr>
       );
       leaderBoard.push(eachLeader);
@@ -35,6 +49,7 @@ class Stats extends Component {
               <tr>
                 <th>Ranking</th>
                 <th>Userame     </th>
+                <th>Category                </th>
                 <th>Score</th>
               </tr>
             </thead>
