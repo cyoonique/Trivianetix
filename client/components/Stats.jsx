@@ -16,7 +16,6 @@ class Stats extends Component {
     fetch('/profile/getLeaders')
     .then(res => res.json())
     .then(data => {
-      console.log('stats data from sql: ', data);
       this.setState({
         rankings: data.rankings,
         usernames: data.usernames,
@@ -310,13 +309,34 @@ class Stats extends Component {
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br/>Your Score For This Game: {PercentageRightForThisGame}%</p>;
     // console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
     
+    const categoryMap = {
+      9: 'General Knowledge',
+      10: 'Books',
+      11: 'Film',
+      12: 'Music',
+      13: 'Musicals and Theater',
+      14: 'Television',
+      15: 'Video Games',
+      16: 'Board Games',
+      17: 'Science and Nature',
+      18: 'Computers',
+      19: 'Mathematics',
+      20: 'Mythology',
+      21: 'Sports',
+      22: 'Geography',
+      23: 'History',
+      24: 'Politics',
+      25: 'Art',
+      26: 'Celebrities',
+      27: 'Animals'
+    };
     const leaderBoard = [];
     for (let i = 0; i <= 10; i += 1) {
       let eachLeader = (
         <tr>
           <td>{this.state.rankings[i]}</td>
           <td>{this.state.usernames[i]}</td>
-          <td>{this.state.categories[i]}</td>
+          <td>{categoryMap[this.state.categories[i]]}</td>
           <td>{this.state.scores[i]}</td>
         </tr>
       );
