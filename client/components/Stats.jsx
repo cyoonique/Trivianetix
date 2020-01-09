@@ -23,7 +23,105 @@ class Stats extends Component {
 
   }
   drawChart() {
-    const data = [12, 5, 6, 20, 50, 10];
+
+    //give the graph an array of data with each element as an object with date: new date and nps: score
+    var lineData = [];
+    
+    
+    
+    lineData.push({date:new Date('December 18, 1995 03:24:00'), nps:89});
+    lineData.push({date:new Date('December 19, 1995 03:24:00'), nps:96});
+    lineData.push({date:new Date('December 20, 1995 03:24:00'), nps:87});
+    lineData.push({date:new Date('December 21, 1995 03:24:00'), nps:99});
+    lineData.push({date:new Date('December 22, 1995 03:24:00'), nps:83});
+    lineData.push({date:new Date('December 23, 1995 03:24:00'), nps:93});
+    lineData.push({date:new Date('December 24, 1995 03:24:00'), nps:79});
+    lineData.push({date:new Date('December 25, 1995 03:24:00'), nps:94});
+    lineData.push({date:new Date('December 26, 1995 03:24:00'), nps:89});
+    lineData.push({date:new Date('December 27, 1995 03:24:00'), nps:93});
+    lineData.push({date:new Date('December 28, 1995 03:24:00'), nps:81});
+    
+    
+    lineData.sort(function(a,b){
+        return new Date(b.date) - new Date(a.date);
+    });
+    
+    
+    
+    var height  = 400;
+    var width   = 700;
+    var hEach   = 40;
+    
+    var margin = {top: 120, right: 15, bottom: 125, left: 25};
+    
+    width =     width - margin.left - margin.right;
+    height =    height - margin.top - margin.bottom;
+    
+    var svg = d3.select('#graph').append("svg")
+      .attr("width",  width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .attr("fill", "none")
+      .attr("stroke", "#000");
+    
+    // set the ranges
+    var x = d3.scaleTime().range([0, width]);
+    x.domain(d3.extent(lineData, function(d) { return d.date; }));
+    
+    
+    var y = d3.scaleLinear().range([height, 0]);
+    
+    
+    y.domain([d3.min(lineData, function(d) { return d.nps; }) - 5, 100]);
+    
+    var valueline = d3.line()
+            .x(function(d) { return x(d.date); })
+            .y(function(d) { return y(d.nps);  })
+            .curve(d3.curveMonotoneX);
+    
+    svg.append("path")
+        .data([lineData]) 
+        .attr("class", "line")  
+        .attr("d", valueline); 
+       
+    
+    
+     var xAxis_woy = d3.axisBottom(x).tickFormat(d3.timeFormat("Week %V")).tickValues(lineData.map(d=>d.date));
+    
+    svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis_woy);
+    
+    //  Add the Y Axis
+    //  svg.append("g").call(d3.axisLeft(y));
+    
+    svg.selectAll(".dot")
+        .data(lineData)
+        .enter()
+        .append("circle") // Uses the enter().append() method
+        .attr("class", "dot") // Assign a class for styling
+        .attr("cx", function(d) { return x(d.date) })
+        .attr("cy", function(d) { return y(d.nps) })
+        .attr("r", 5);  
+    
+    
+    svg.selectAll(".text")
+        .data(lineData)
+        .enter()
+        .append("text") // Uses the enter().append() method
+        .attr("class", "label") // Assign a class for styling
+        .attr("x", function(d, i) { return x(d.date) })
+        .attr("y", function(d) { return y(d.nps) })
+        .attr("dy", "-5")
+        .text(function(d) {return d.nps; });
+    
+    svg.append('text')                                     
+          .attr('x', 10)              
+          .attr('y', -30)             
+          .text('Score Over Time for This Topic'); 
+    // const data = [12, 5, 6, 20, 50, 10];
     var models = [{
       "model_name":"Middle School",
       "field1":19,
@@ -54,7 +152,7 @@ class Stats extends Component {
       margin = {top: 130, right: 120, bottom: 130, left: 150},
       barPadding = .2,
       axisTicks = {qty: 5, outerSize: 0, dateFormat: '%m-%d'};
-    var svg = container
+    var svg2 = container
       .append("svg")
       .attr("width", width)
       .attr("height", height)
@@ -75,7 +173,7 @@ class Stats extends Component {
         return d.field2 > d.field3 ? d.field2 : d.field3
       }
     })]);
-    var model_name = svg.selectAll(".model_name")
+    var model_name = svg2.selectAll(".model_name")
       .data(models)
       .enter().append("g")
       .attr("class", "model_name")
@@ -117,12 +215,12 @@ class Stats extends Component {
     svg.append("g")
       .attr("class", "y axis")
       .call(yAxis);
-    svg.append("circle").attr("cx", -10).attr("cy", -70).attr("r", 6).style("fill", "blue");
-    svg.append("circle").attr("cx", -10).attr("cy", -50).attr("r", 6).style("fill", "red");
-    svg.append("circle").attr("cx", -10).attr("cy", -30).attr("r", 6).style("fill", "green");
-    svg.append("text").attr("x", 0).attr("y", -70).text("Gametype: Film").style("font-size", "15px").style("fill", "blue").attr("alignment-baseline","middle");
-    svg.append("text").attr("x", 0).attr("y", -50).text("Gametype: Music").style("font-size", "15px").style("fill", "red").attr("alignment-baseline","middle");
-    svg.append("text").attr("x", 0).attr("y", -30).text("Gametype: Politics").style("font-size", "15px").style("fill", "green").attr("alignment-baseline","middle");    
+    svg2.append("circle").attr("cx", -10).attr("cy", -70).attr("r", 6).style("fill", "blue");
+    svg2.append("circle").attr("cx", -10).attr("cy", -50).attr("r", 6).style("fill", "red");
+    svg2.append("circle").attr("cx", -10).attr("cy", -30).attr("r", 6).style("fill", "green");
+    svg2.append("text").attr("x", 0).attr("y", -70).text("Gametype: Film").style("font-size", "15px").style("fill", "blue").attr("alignment-baseline","middle");
+    svg2.append("text").attr("x", 0).attr("y", -50).text("Gametype: Music").style("font-size", "15px").style("fill", "red").attr("alignment-baseline","middle");
+    svg2.append("text").attr("x", 0).attr("y", -30).text("Gametype: Politics").style("font-size", "15px").style("fill", "green").attr("alignment-baseline","middle");    
   }
 
   render() {
