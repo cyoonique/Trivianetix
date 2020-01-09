@@ -16,8 +16,8 @@ class App extends Component {
       incorrectResponses: [],
       question: {},
       choice: 'none',
-      url: "9",
-
+      url: '9',
+      score: 0,
       //MOCK DATA
       // username: document.cookie.slice(9),
       // gameMode: false,
@@ -50,6 +50,30 @@ class App extends Component {
     this.startGame = this.startGame.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
+    this.settingScore = this.settingScore.bind(this);
+    this.settingScoreResponse = this.settingScoreResponse.bind(this);
+    this.sendResponse = this.sendResponse.bind(this);
+  }
+
+  // Setting the score state after stats state is set
+  settingScore() {
+    let correctAnswers = this.state.stats.correctAnswers;
+    let gamesPlayed = this.state.stats.gamesPlayed * 10;
+    if (gamesPlayed > 0) {
+      let scoreCal = (correctAnswers/ gamesPlayed) * 100;
+      this.setState({
+        score: scoreCal,
+      });  
+    }  
+  }
+
+  settingScoreResponse() {
+    let correctAnswers = this.state.stats.correctAnswers;
+    let gamesPlayed = this.state.stats.gamesPlayed * 10;
+    let scoreCal = (correctAnswers/ gamesPlayed) * 100;
+      this.setState({
+        score: scoreCal,
+      },this.sendResponse);
   }
 
   // Wait until server is working to test correct data
@@ -63,27 +87,28 @@ class App extends Component {
           username,
           results,
           stats: { gamesPlayed, correctAnswers },
-        });
+        }, this.settingScore);
       })
       .catch((err) => { console.log(err); });
+      
   }
 
   onHandleClick(e) {
     this.setState({ url: e.target.value });
   }
+
   startGame() {
     if (!this.state.gameMode) {
       fetch(`/trivia/${this.state.username}/${this.state.url}`)
         .then(res => res.json())
         .then(data => {
-          const { results, gamesPlayed, correctAnswers } = data;
+          const { results } = data;
           const gameMode = true;
           const question = results.pop();
           this.setState({
             gameMode,
             results,
             question,
-            stats: { gamesPlayed, correctAnswers },
           });
         })
         .catch(err => { console.log(err); });
@@ -107,15 +132,18 @@ class App extends Component {
     }
   }
 
+  // Manages behaviour while playing the game, wheather start game, end game and send results and 
+  // setState between games
   handleChange(e) {
     let gameMode = this.state.gameMode;
     const choice = e.target.value;
     const correct = this.state.question.correct_answer;
     const correctResponses = [...this.state.correctResponses];
     const incorrectResponses = [...this.state.incorrectResponses];
-    console.log('User chose the answer: ', e.target.value);
-    console.log('The actual correct answer: ', correct);
-    console.log('correctResponses: ', correctResponses);
+    // console.log('User chose the answer: ', e.target.value);
+    // console.log('The actual correct answer: ', correct);
+    // console.log('correctResponses: ', this.state.correctResponses);
+
     if (choice === correct) {
       correctResponses.push(this.state.question);
     } else {
@@ -124,7 +152,13 @@ class App extends Component {
     if (this.state.results.length > 0) {
       this.startGame();
     } else {
-      this.sendResponse();
+      const stats = {...this.state.stats};
+      stats.correctAnswers = stats.correctAnswers + this.state.correctResponses.length;
+      stats.gamesPlayed = stats.gamesPlayed + 1;
+      this.setState({
+        stats,
+      },this.settingScoreResponse
+      );
       gameMode = false;
     }
     e.target.checked = false;
@@ -135,8 +169,8 @@ class App extends Component {
     });
   }
 
-  sendResponse() {
-    console.log('Sending Repsonse...');
+  sendResponse() { 
+    console.log('Sending Response...');
     fetch('/profile/update', {
       method: 'PUT',
       headers: {
@@ -144,15 +178,12 @@ class App extends Component {
       },
       body: JSON.stringify({
         username: this.state.username,
-        correctAnswers: this.state.correctResponses.length,
+        correctAnswers: this.state.stats.correctAnswers,
+        url: this.state.url,
+        score: this.state.score,
+        gamesPlayed: this.state.stats.gamesPlayed,
       }),
-    }).then(res => res.json())
-      .then(data => {
-        const { gamesPlayed, correctAnswers } = data;
-        this.setState({
-          stats: { gamesPlayed, correctAnswers },
-        });
-      })
+    })
       .catch(err => {
         console.log(err);
       })
