@@ -205,6 +205,11 @@ class Stats extends Component {
       .attr("transform", `translate(${margin.left},${margin.top})`)
       .attr("border-radius", "5px")
       .attr("style", "outline: thick solid black;");
+    //   var redBox = svg2.append("rect")
+    // .attr("width", width)
+    // .attr("height", height)
+    // .attr("fill", "red")
+    // .attr("opacity", 0.2);
     var xScale0 = d3.scaleBand().range([0, width - margin.left - margin.right]).padding(barPadding);
     var xScale1 = d3.scaleBand();
     var yScale = d3.scaleLinear().range([height - margin.top - margin.bottom, 0]);
@@ -267,6 +272,7 @@ class Stats extends Component {
       .call(xAxis);
     svg2.append("g")
       .attr("class", "y axis")
+      .style("font", "20px times")
       .call(yAxis);
     svg2.append("circle").attr("cx", -10).attr("cy", -70).attr("r", 6).style("fill", "blue");
     svg2.append("circle").attr("cx", -10).attr("cy", -50).attr("r", 6).style("fill", "red");

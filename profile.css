@@ -8,7 +8,10 @@ body {
 p {
   font-family: 'Luckiest Guy', cursive;
 }
+svg {
+  background-color: rgba(243, 135, 33, 0.651);
 
+}
 .header-tag {
   text-align: center;
   font-size: 72px;
