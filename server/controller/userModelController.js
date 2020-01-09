@@ -196,6 +196,25 @@ userModelController.getGraphData = async(req, res, next) => {
   return next();
 };
 
+// Query for average over time of current user
+userModelController.getGraphData2 = async(req, res, next) => {
+  console.log("params: ",req.params);
+  const { username } = req.params;
+  let row;
+  let sql = `
+    SELECT correct_answers, TO_CHAR(date, 'Mon dd, yyyy HH24:MI:SS') 
+    FROM gamesplayed 
+    WHERE username_fk = '${username}' 
+    ORDER BY date DESC LIMIT 20
+    `;
+  await db.query(sql)
+  .then(response => {
+    row = {...response.rows};
+    res.locals.graph2 = row;
+    // console.log(res.locals.graph2);
+  }).catch(err => console.log(err));
+  return next();
+};
 
 userModelController.findLeaders = (req, res, next) => {
   const { username, totalCorrectAnswers, currentCorrectAnswers, score, gamesPlayed, url } = req.body;
