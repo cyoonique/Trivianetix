@@ -8,12 +8,21 @@ profile.get('/profile.css', (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, '../../profile.css'));
 });
 
+profile.get('/getLeaders', userModelController.findLeaders, (req, res) => {
+  res.status(200).json({
+    usernames: res.locals.usernames,
+    categories: res.locals.categories,
+    scores: res.locals.scores,
+    rankings: res.locals.ranks
+  });
+});
+
 profile.post('/', userModelController.findUser, cookieController.setCookie, (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, "../../client/profile.html"));
 });
 
-profile.put('/update', userModelController.updateUser, (req, res) => {
-  res.status(200).json({gamesPlayed: res.locals.games_played, correctAnswers: res.locals.correct_answers});
+profile.put('/update', userModelController.updateUser, userModelController.findLeaders, userModelController.compareLeaders, (req, res) => {
+  res.sendStatus(200);
 });
 
 profile.delete('/delete', userModelController.deleteUser, (req, res) => {
