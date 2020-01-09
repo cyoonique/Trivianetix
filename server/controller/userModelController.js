@@ -143,25 +143,27 @@ userModelController.getGraphData = async(req, res, next) => {
       // Case no games played in that category
       if (count === 0) {
         obj[category] = 0
-        res.locals.currentuser = obj;
+        // res.locals.currentuser = obj;
       }
       else {  
         obj[category] = (resp.rows[0].sum/(count*10))*100;
-        res.locals.currentuser = obj;
       }
       
     }).catch(err => console.log(err));
   }
+  res.locals.currentuser = obj;
+
   // console.log("score: ",res.locals.currentuser);
 
   // Getting score per category of all games played except the username, 
   // response sent as res.locals.currentuser[education][category]
   category;
   count;
-  let education = ['NF','GED','SE','BA','MA','DH'];
-  obj = {};
+  let education = ['SE','BA','MA'];
+  // obj = {};
   let obj1 = {};
   for (let j = 0; j < education.length; j++){
+    obj = {}
   for (let i = 0; i < row.length; i++){
     category = row[i].id;
     sql = `
@@ -177,20 +179,19 @@ userModelController.getGraphData = async(req, res, next) => {
     await db.query(sql)
     .then(resp => {
       count = Number(resp.rows[0].count);
+      console.log('in second query count =', count)
       // Case no games played in that category
       if (count === 0) {
-        obj[category] = 0
-        obj1[education[j]] = obj;
-        res.locals.users = obj1;
+        obj[category] = 0        
       }
       else {  
         obj[category] = (resp.rows[0].sum/(count*10))*100;
-        obj1[education[j]] = obj;
-        res.locals.users = obj1;
       }
     }).catch(err => console.log(err));
   }
+     obj1[education[j]] = obj;    
   }
+  res.locals.users = obj1;
   console.log("currentuser: ",res.locals.currentuser, "users: ", res.locals.users);
   return next();
 };

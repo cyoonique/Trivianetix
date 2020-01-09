@@ -4,9 +4,19 @@ import Table from 'react-bootstrap/Table';
 
 class Stats extends Component {
   componentDidMount() {
-    // fetch(`/getGraphData/${chosentopic}/College`)
-    // .then(res => res.json)
-    // .catch(err => console.log(err))
+    fetch(`/Trivia/${this.props.username}`)
+    .then(res => res.json())
+    .then((res)=> {
+      console.log(res)
+      // for (let i = 0; i < res.currentUser.length; i += 1) {
+      //   let topic1;
+      //   let topic2; 
+      //   let topic3;
+      // }
+    })
+    .then(()=> {
+      this.drawChart()})
+    .catch(err => console.log(err))
 
     // fetch(`/getGraphData/${chosentopic}/HighSchool`)
     // .then(res => res.json)
@@ -19,7 +29,7 @@ class Stats extends Component {
 
 
 
-    this.drawChart();
+   
 
   }
   drawChart() {
