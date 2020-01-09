@@ -76,24 +76,27 @@ userModelController.questions = async (req, res, next) => {
   return next();
 };
 
-// used for when a user wants to update their information -- stretch feature?
-userModelController.updateUser = async (req, res, next) => {
-  const { username, correctAnswers, score, gamesPlayed } = req.body;
-  // console.log("Answereeeeeeeeeeerrrr: Score",req.body.score," total games ", req.body.game," Correct Answers ", correctAnswers)
-  const text1 = `
-    SELECT games_played, correct_answers
-    FROM usersfix
-    WHERE username = '${username}'
-  `;
-  await db.query(text1)
-    .then(response => res.locals.updatedStats = response.rows[0])
-    .catch(err => console.log(err));
-  const text2 = `
+// Updating tables after finishing a game
+userModelController.updateUser = (req, res, next) => {
+  const { username, correctAnswers, score, gamesPlayed, url } = req.body;
+
+  // Updating gamesPlayed and correct answer fromn userfix
+  let sql = `
     UPDATE usersfix
     SET games_played = '${gamesPlayed}', correct_answers = '${correctAnswers}'
     WHERE username = '${username}'
   `;
-  await db.query(text2)
+   db.query(sql)
+    .then(response => console.log(response))
+    .catch(err => console.log(err));
+
+  // Inserting a row into gamesPlayed table
+  sql = `
+    INSERT INTO gamesplayed
+    (username_fk, category_fk, correct_answers)
+    VALUES ('${username}', ${url}, ${correctAnswers})
+  `;
+   db.query(sql)
     .then(response => console.log(response))
     .catch(err => console.log(err));
   return next();
