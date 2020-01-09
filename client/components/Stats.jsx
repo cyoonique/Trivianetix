@@ -13,6 +13,9 @@ class Stats extends Component {
     };
   }
   componentDidMount() {
+<<<<<<< HEAD
+    fetch(`/trivia/${this.props.username}`)
+=======
     fetch('/profile/getLeaders')
     .then(res => res.json())
     .then(data => {
@@ -26,8 +29,10 @@ class Stats extends Component {
     });
 
     fetch(`/Trivia/${this.props.username}`)
+>>>>>>> 2ce28c103e5d1333a1029ba200c942de06beb843
     .then(res => res.json())
     .then((res)=> {
+      // Constructing data of graph 
       console.log(res)
       let models = [];
       let model1 = {"model_name": "Your scores" };
@@ -55,7 +60,21 @@ class Stats extends Component {
       }
       models.push(model1, model2, model3, model4)
       console.log(models)
-      this.drawChart(models)
+      // this.drawChart(models);
+
+      // Constructing graph of second graph
+      let graph = res.graph2;
+      let graphArray = [];
+      let date;
+      let nps;
+      for (let key in graph){
+        console.log(graph[key]);
+        date = new Date(graph[key].to_char);
+        nps = Number(graph[key].correct_answers)/10;
+         graphArray.push({'date': date, 'nps': nps});
+      }    
+      console.log(graphArray);
+      this.drawChart(models, graphArray);
     })
     // .then(()=> {
     //   var models = [{
@@ -99,8 +118,9 @@ class Stats extends Component {
    
 
   }
-  drawChart(data) {
-    let models = data
+  drawChart(data, data2) {
+    let models = data;
+    let lineData = data2;
     //give the graph an array of data with each element as an object with date: new date and nps: score
     // var lineData = [];
     
@@ -125,89 +145,88 @@ class Stats extends Component {
     
     
     
-    // var height  = 600;
-    // var width   = 700;
-    // var hEach   = 40;
+    var height  = 600;
+    var width   = 700;
+    var hEach   = 40;
     
-    // var margin = {top: 120, right: 25, bottom: 125, left: 25};
+    var margin = {top: 120, right: 25, bottom: 125, left: 25};
     
-    // width =     width - margin.left - margin.right;
-    // height =    height - margin.top - margin.bottom;
+    width =     width - margin.left - margin.right;
+    height =    height - margin.top - margin.bottom;
     
-    // var svg = d3.select('#graph').append("svg")
-    //   .attr("width",  width + margin.left + margin.right)
-    //   .attr("height", height + margin.top + margin.bottom)
-    //   .append("g")
-    //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-    //   .attr("fill", "none")
-    //   .attr("stroke", "#000")
-    //   .attr("border-radius", "5px")
-    //   // .attr("font-size", "20px")
-    //   .attr("style", "outline: thick solid black;");   //This will do the job
+    var svg = d3.select('#graph').append("svg")
+      .attr("width",  width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .attr("fill", "none")
+      .attr("stroke", "#000")
+      .attr("border-radius", "5px")
+      // .attr("font-size", "20px")
+      .attr("style", "outline: thick solid black;");   //This will do the job
       
     
-    // // set the ranges
-    // var x = d3.scaleTime().range([0, width]);
-    // x.domain(d3.extent(lineData, function(d) { return d.date; }));
+    // set the ranges
+    var x = d3.scaleTime().range([0, width]);
+    x.domain(d3.extent(lineData, function(d) { return d.date; }));
     
     
-    // var y = d3.scaleLinear().range([height, 0]);
+    var y = d3.scaleLinear().range([height, 0]);
     
     
-    // y.domain([d3.min(lineData, function(d) { return d.nps; }) - 5, 100]);
+    y.domain([d3.min(lineData, function(d) { return d.nps; }) - 5, 100]);
     
-    // var valueline = d3.line()
-    //         .x(function(d) { return x(d.date); })
-    //         .y(function(d) { return y(d.nps);  })
-    //         .curve(d3.curveMonotoneX);
+    var valueline = d3.line()
+            .x(function(d) { return x(d.date); })
+            .y(function(d) { return y(d.nps);  })
+            .curve(d3.curveMonotoneX);
     
-    // svg.append("path")
-    //     .data([lineData]) 
-    //     .attr("class", "line")  
-    //     .attr("d", valueline); 
+    svg.append("path")
+        .data([lineData]) 
+        .attr("class", "line")  
+        .attr("d", valueline); 
        
     
     
-    //  var xAxis_woy = d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d")).tickValues(lineData.map(d=>d.date));
+     var xAxis_woy = d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d")).tickValues(lineData.map(d=>d.date));
     
-    // svg.append("g")
-    //         .attr("class", "x axis")
-    //         .attr("transform", "translate(0," + height + ")")
-    //         .call(xAxis_woy);
+    svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis_woy);
     
-    // //  Add the Y Axis
-    // //  svg.append("g").call(d3.axisLeft(y));
+    //  Add the Y Axis
+    //  svg.append("g").call(d3.axisLeft(y));
     
-    // svg.selectAll(".dot")
-    //     .data(lineData)
-    //     .enter()
-    //     .append("circle") // Uses the enter().append() method
-    //     .attr("class", "dot") // Assign a class for styling
-    //     .attr("cx", function(d) { return x(d.date) })
-    //     .attr("cy", function(d) { return y(d.nps) })
-    //     .attr("r", 5)
-    //     .attr("fill","red");  
+    svg.selectAll(".dot")
+        .data(lineData)
+        .enter()
+        .append("circle") // Uses the enter().append() method
+        .attr("class", "dot") // Assign a class for styling
+        .attr("cx", function(d) { return x(d.date) })
+        .attr("cy", function(d) { return y(d.nps) })
+        .attr("r", 5)
+        .attr("fill","red");  
     
     
-    // svg.selectAll(".text")
-    //     .data(lineData)
-    //     .enter()
-    //     .append("text") // Uses the enter().append() method
-    //     .attr("class", "label") // Assign a class for styling
-    //     .attr("x", function(d, i) { return x(d.date) })
-    //     .attr("y", function(d) { return y(d.nps + 1) })
-    //     .attr("dy", "-5")
-    //     .attr("font-family", "Pompadour")
-    //     .attr("font-size", "20px")
-    //     .attr("fill", "black")
-    //     .text(function(d) {return d.nps; });
+    svg.selectAll(".text")
+        .data(lineData)
+        .enter()
+        .append("text") // Uses the enter().append() method
+        .attr("class", "label") // Assign a class for styling
+        .attr("x", function(d, i) { return x(d.date) })
+        .attr("y", function(d) { return y(d.nps + 1) })
+        .attr("dy", "-5")
+        .attr("font-family", "Pompadour")
+        .attr("font-size", "20px")
+        .attr("fill", "black")
+        .text(function(d) {return d.nps; });
     
-    // svg.append('text')                                     
-    //       .attr('x', 10)              
-    //       .attr('y', -30)             
-    //       .text('Score Over Time for This Topic')
-    //       .attr("fill", "black"); 
-    // const data = [12, 5, 6, 20, 50, 10];
+    svg.append('text')                                     
+          .attr('x', 10)              
+          .attr('y', -30)             
+          .text('Score Over Time for This Topic')
+          .attr("fill", "black"); 
 
 
     //NEW GRAPH
