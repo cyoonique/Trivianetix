@@ -9,7 +9,7 @@ userModelController.createUser = (req, res, next) => {
   const { username, password, age, state, education } = req.body;
   console.log('req.body: ', req.body);
   const text = `
-    INSERT INTO users (username, password, age, state, education, games_played, correct_answers)
+    INSERT INTO usersfix (username, password, age, state, education, games_played, correct_answers)
     values($1, $2, $3, $4, $5, $6, $7)
   `;
   const values = [username, password, age, state, education, 0, 0];
@@ -25,7 +25,7 @@ userModelController.findUser = (req, res, next) => {
   console.log('req.body: ', req.body);
   const text = `
     SELECT username
-    FROM users
+    FROM usersfix
     WHERE username = '${username}' AND password = '${password}'
   `;
   db.query(text)
@@ -46,7 +46,7 @@ userModelController.findUser = (req, res, next) => {
 userModelController.findStats = (req, res, next) => {
   const text = `
     SELECT games_played, correct_answers
-    FROM users
+    FROM usersfix
     WHERE username = '${req.params.username}'
   `;
   db.query(text)
@@ -78,20 +78,19 @@ userModelController.questions = async (req, res, next) => {
 
 // used for when a user wants to update their information -- stretch feature?
 userModelController.updateUser = async (req, res, next) => {
-  const { username, correctAnswers } = req.body;
+  const { username, correctAnswers, score, gamesPlayed } = req.body;
+  // console.log("Answereeeeeeeeeeerrrr: Score",req.body.score," total games ", req.body.game," Correct Answers ", correctAnswers)
   const text1 = `
     SELECT games_played, correct_answers
-    FROM users
+    FROM usersfix
     WHERE username = '${username}'
   `;
   await db.query(text1)
     .then(response => res.locals.updatedStats = response.rows[0])
     .catch(err => console.log(err));
-  res.locals.games_played = Number(res.locals.updatedStats.games_played) + 1;
-  res.locals.correct_answers = Number(res.locals.updatedStats.correct_answers) + correctAnswers;
   const text2 = `
-    UPDATE users
-    SET games_played = '${res.locals.games_played}', correct_answers = '${res.locals.correct_answers}'
+    UPDATE usersfix
+    SET games_played = '${gamesPlayed}', correct_answers = '${correctAnswers}'
     WHERE username = '${username}'
   `;
   await db.query(text2)
@@ -103,7 +102,7 @@ userModelController.updateUser = async (req, res, next) => {
 userModelController.deleteUser = async (req, res, next) => {
   const { username } = req.body;
   const text = `
-    DELETE FROM users
+    DELETE FROM usersfix
     WHERE username = '${username}'
   `
   await db.query(text)
@@ -111,5 +110,31 @@ userModelController.deleteUser = async (req, res, next) => {
     .catch(err => console.log(err))
   return next();
 };
+
+///run this query to get average score of one educational level for one topic
+userModelController.getGraphData = async (req, res, next) => {
+  const topic = req.params.topic;
+  const educationLevel = req.params.education;
+  const graphQuery = `
+  Select ...`
+
+  await db.query(graphQuery)
+  .then(response => {
+    let gamesPlayed = 0;
+    let TotalScore = 0;
+
+    for (let i = 0; i < response.rows.length; i += 1) {
+      let row = rows[i];
+      gamesPlayed += 1;
+      let numberCorrect = row.correctAnswers * 10;
+      TotalScore += numberCorrect;
+    }
+    let averageScore = TotalScore / gamesPlayed;
+    return res.locals.averageScore = averageScore;
+  })
+
+
+return next();
+}
 
 module.exports = userModelController;
