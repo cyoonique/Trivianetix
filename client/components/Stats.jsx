@@ -64,6 +64,8 @@ class Stats extends Component {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .attr("fill", "none")
       .attr("stroke", "#000")
+      .attr("border-radius", "5px")
+      // .attr("font-size", "20px")
       .attr("style", "outline: thick solid black;");   //This will do the job
       
     
@@ -119,6 +121,7 @@ class Stats extends Component {
         .attr("y", function(d) { return y(d.nps + 1) })
         .attr("dy", "-5")
         .attr("font-family", "Pompadour")
+        .attr("font-size", "20px")
         .attr("fill", "black")
         .text(function(d) {return d.nps; });
     
