@@ -97,9 +97,11 @@ userModelController.updateUser = (req, res, next) => {
     VALUES ('${username}', ${url}, ${correctAnswers})
   `;
    db.query(sql)
-    .then(response => console.log(response))
+    .then(response => {
+      console.log(response);
+      return next();
+    })
     .catch(err => console.log(err));
-  return next();
 };
 
 userModelController.deleteUser = async (req, res, next) => {
@@ -135,9 +137,42 @@ userModelController.getGraphData = async (req, res, next) => {
     let averageScore = TotalScore / gamesPlayed;
     return res.locals.averageScore = averageScore;
   })
+  return next();
+};
+
+userModelController.findLeaders = (req, res, next) => {
+  const text = `
+  SELECT *
+  FROM leaderboard
+  `;
+  db.query(text)
+    .then (response =>{
+      const usernames = [];
+      const categories = [];
+      const scores = [];
+      for (let i = 0; i < response.rows.length; i++){
+        let row = response.rows[i];
+        usernames.push(row.username_fk);
+        categories.push(row.category_fk);
+        scores.push(row.score); 
+      }
+      res.locals.usernames = usernames;
+      res.locals.categories = categories;
+      res.locals.scores = scores;
+      return next();
+    })
+    .catch(err => console.log(err));
+};
+
+userModelController.compareLeaders = (req, res, next) => {
+  console.log('in compareLeaders');
+  console.log('res.locals.usernames: ', res.locals.usernames);
+  console.log('res.locals.categirues: ', res.locals.categories);
+  console.log('res.locals.scores: ', res.locals.scores);
+  console.log("This is req.body", req.body);
 
 
-return next();
-}
+  return next();
+};
 
 module.exports = userModelController;
