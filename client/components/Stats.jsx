@@ -17,30 +17,12 @@ class Stats extends Component {
     .then(res => res.json())
     .then(data => {
       console.log('stats data from sql: ', data);
-      const leaderBoard = [];
-      for (let i = 0; i <= 9; i += 1) {
-        let eachLeader = (
-          <tr>
-            <td>{data.rankings[i]}</td>
-            <td>{data.usernames[i]}</td>
-            <td>{data.categories[i]}</td>
-            <td>{data.scores[i]}</td>
-          </tr>
-        );
-        leaderBoard.push(eachLeader);
-
-        // const tr = document.createElement('tr');
-        document.getElementById('tableBody').appendChild(leaderBoard);
-        // let td = document.createElement('td');
-        // td.innerHTML = '1';
-        // tr.appendChild(td);
-      }
-
-      const p = document.createElement('p');
-      const words = document.createTextNode('ajiodaf');
-      p.appendChild(words);
-      document.body.appendChild(p);
-
+      this.setState({
+        rankings: data.rankings,
+        usernames: data.usernames,
+        categories: data.categories,
+        scores: data.scores
+      });
     });
 
     fetch(`/Trivia/${this.props.username}`)
@@ -325,18 +307,18 @@ class Stats extends Component {
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br/>Your Score For This Game: {PercentageRightForThisGame}%</p>;
     console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
     
-    // TODO: pull leaderBoard data from MongoDB
-    // const leaderBoard = [];
-    // for (let i = 1; i <= 10; i += 1) {
-    //   let eachLeader = (
-    //     <tr>
-    //       <td>{i}</td>
-    //       <td>Cat</td>
-    //       <td>{i * 10}</td>
-    //     </tr>
-    //   );
-    //   leaderBoard.push(eachLeader);
-    // }
+    const leaderBoard = [];
+    for (let i = 0; i <= 10; i += 1) {
+      let eachLeader = (
+        <tr>
+          <td>{this.state.rankings[i]}</td>
+          <td>{this.state.usernames[i]}</td>
+          <td>{this.state.categories[i]}</td>
+          <td>{this.state.scores[i]}</td>
+        </tr>
+      );
+      leaderBoard.push(eachLeader);
+    }
 
     return (
       <div>
@@ -355,7 +337,7 @@ class Stats extends Component {
               </tr>
             </thead>
             <tbody id='tableBody'>
-              {/* {leaderBoard} */}
+              {leaderBoard}
             </tbody>
           </Table>
         </div>

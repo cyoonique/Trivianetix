@@ -13,7 +13,7 @@ profile.get('/getLeaders', userModelController.findLeaders, (req, res) => {
     usernames: res.locals.usernames,
     categories: res.locals.categories,
     scores: res.locals.scores,
-    ranks: res.locals.ranks
+    rankings: res.locals.ranks
   });
 });
 
