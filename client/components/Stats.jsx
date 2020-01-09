@@ -3,7 +3,28 @@ import * as d3 from "d3";
 import Table from 'react-bootstrap/Table';
 
 class Stats extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      rankings: [],
+      usernames: [],
+      categories: [],
+      scores: []
+    };
+  }
   componentDidMount() {
+    fetch('/profile/getLeaders')
+    .then(res => res.json())
+    .then(data => {
+      console.log('stats data from sql: ', data);
+      this.setState({
+        rankings: data.rankings,
+        usernames: data.usernames,
+        categories: data.categories,
+        scores: data.scores
+      });
+    });
+
     fetch(`/Trivia/${this.props.username}`)
     .then(res => res.json())
     .then((res)=> {
@@ -286,14 +307,14 @@ class Stats extends Component {
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br/>Your Score For This Game: {PercentageRightForThisGame}%</p>;
     console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
     
-    // TODO: pull leaderBoard data from MongoDB
     const leaderBoard = [];
-    for (let i = 1; i <= 10; i += 1) {
+    for (let i = 0; i <= 10; i += 1) {
       let eachLeader = (
         <tr>
-          <td>{i}</td>
-          <td>Cat</td>
-          <td>{i * 10}</td>
+          <td>{this.state.rankings[i]}</td>
+          <td>{this.state.usernames[i]}</td>
+          <td>{this.state.categories[i]}</td>
+          <td>{this.state.scores[i]}</td>
         </tr>
       );
       leaderBoard.push(eachLeader);
@@ -311,10 +332,11 @@ class Stats extends Component {
               <tr>
                 <th>Ranking</th>
                 <th>Username     </th>
+                <th>Categories     </th>
                 <th>Score</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id='tableBody'>
               {leaderBoard}
             </tbody>
           </Table>
