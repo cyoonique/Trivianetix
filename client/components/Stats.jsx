@@ -27,7 +27,7 @@ class Stats extends Component {
     //give the graph an array of data with each element as an object with date: new date and nps: score
     var lineData = [];
     
-    
+    // send all if less than 20 games
     
     lineData.push({date:new Date('December 18, 1995 03:24:00'), nps:89});
     lineData.push({date:new Date('December 19, 1995 03:24:00'), nps:96});
@@ -64,6 +64,8 @@ class Stats extends Component {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .attr("fill", "none")
       .attr("stroke", "#000")
+      .attr("border-radius", "5px")
+      // .attr("font-size", "20px")
       .attr("style", "outline: thick solid black;");   //This will do the job
       
     
@@ -119,6 +121,7 @@ class Stats extends Component {
         .attr("y", function(d) { return y(d.nps + 1) })
         .attr("dy", "-5")
         .attr("font-family", "Pompadour")
+        .attr("font-size", "20px")
         .attr("fill", "black")
         .text(function(d) {return d.nps; });
     
