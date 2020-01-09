@@ -27,7 +27,7 @@ class Stats extends Component {
     //give the graph an array of data with each element as an object with date: new date and nps: score
     var lineData = [];
     
-    
+    // send all if less than 20 games
     
     lineData.push({date:new Date('December 18, 1995 03:24:00'), nps:89});
     lineData.push({date:new Date('December 19, 1995 03:24:00'), nps:96});
