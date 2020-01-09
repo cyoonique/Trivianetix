@@ -178,7 +178,8 @@ class App extends Component {
       },
       body: JSON.stringify({
         username: this.state.username,
-        correctAnswers: this.state.stats.correctAnswers,
+        totalCorrectAnswers: this.state.stats.correctAnswers,
+        currentCorrectAnswers: this.state.correctResponses.length,
         url: this.state.url,
         score: this.state.score,
         gamesPlayed: this.state.stats.gamesPlayed,
