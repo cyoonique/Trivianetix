@@ -200,36 +200,57 @@ userModelController.getGraphData = async(req, res, next) => {
 userModelController.findLeaders = (req, res, next) => {
   const text = `
   SELECT *
-  FROM leaderboard
+  FROM leaderboard ORDER BY id
   `;
   db.query(text)
     .then (response =>{
       const usernames = [];
       const categories = [];
       const scores = [];
-      for (let i = 0; i < response.rows.length; i++){
+      const ranks = [];
+      for (let i = 0; i < response.rows.length; i += 1){
         let row = response.rows[i];
         usernames.push(row.username_fk);
         categories.push(row.category_fk);
-        scores.push(row.score); 
+        scores.push(row.score);
+        ranks.push(row.id);
       }
       res.locals.usernames = usernames;
       res.locals.categories = categories;
       res.locals.scores = scores;
+      res.locals.ranks = ranks;
       return next();
     })
     .catch(err => console.log(err));
 };
 
 userModelController.compareLeaders = (req, res, next) => {
-  console.log('in compareLeaders');
-  console.log('res.locals.usernames: ', res.locals.usernames);
-  console.log('res.locals.categirues: ', res.locals.categories);
-  console.log('res.locals.scores: ', res.locals.scores);
-  console.log("This is req.body", req.body);
-
-
-  return next();
+  let currentRank;
+  let firstInstanceFound = false;
+  for (let i = 0; i < res.locals.scores.length; i += 1) {
+    if (res.locals.scores[i] < req.body.currentCorrectAnswers * 10 && !firstInstanceFound) {
+      currentRank = i + 1;
+      firstInstanceFound = true;
+    }
+  }
+  if (currentRank <= 10) {
+    let text = ``;
+    for (let i = 9; i >= currentRank; i -= 1) {
+      text += `UPDATE leaderboard 
+      SET username_fk = '${res.locals.usernames[i - 1]}', category_fk = ${res.locals.categories[i - 1]}, score = ${res.locals.scores[i - 1]}
+      WHERE id = ${res.locals.ranks[i - 1] + 1};`;
+    }
+    text += `
+    UPDATE leaderboard 
+    SET username_fk = '${req.body.username}', category_fk = ${req.body.url}, score = ${req.body.currentCorrectAnswers * 10}
+    WHERE id = ${currentRank};
+    `;
+    db.query(text)
+      .then (response => {
+        return next();
+      })
+      .catch(err => console.log(err));
+  }
 };
 
 module.exports = userModelController;
