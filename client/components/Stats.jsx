@@ -3,16 +3,28 @@ import * as d3 from "d3";
 import Table from 'react-bootstrap/Table';
 
 class Stats extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      rankings: [],
+      usernames: [],
+      categories: [],
+      scores: []
+    };
+  }
   componentDidMount() {
-    //leaderboard
-    fetch(`/profile/getLeaders`)
+    fetch('/profile/getLeaders')
     .then(res => res.json())
     .then(data => {
-      console.log('data for leaderboard:', data);
-      // TODO: pull leaderBoard data from MongoDB
+      console.log('stats data from sql: ', data);
+      this.setState({
+        rankings: data.rankings,
+        usernames: data.usernames,
+        categories: data.categories,
+        scores: data.scores
+      });
     });
 
-    //d3 graph
     fetch(`/Trivia/${this.props.username}`)
     .then(res => res.json())
     .then((res)=> {
@@ -298,18 +310,18 @@ class Stats extends Component {
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br/>Your Score For This Game: {PercentageRightForThisGame}%</p>;
     // console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
     
-    // // TODO: pull leaderBoard data from MongoDB
-    // const leaderBoard = [];
-    // for (let i = 1; i <= 10; i += 1) {
-    //   let eachLeader = (
-    //     <tr>
-    //       <td>{i}</td>
-    //       <td>Cat</td>
-    //       <td>{i * 10}</td>
-    //     </tr>
-    //   );
-    //   leaderBoard.push(eachLeader);
-    // }
+    const leaderBoard = [];
+    for (let i = 0; i <= 10; i += 1) {
+      let eachLeader = (
+        <tr>
+          <td>{this.state.rankings[i]}</td>
+          <td>{this.state.usernames[i]}</td>
+          <td>{this.state.categories[i]}</td>
+          <td>{this.state.scores[i]}</td>
+        </tr>
+      );
+      leaderBoard.push(eachLeader);
+    }
 
     return (
       <div>
@@ -322,13 +334,13 @@ class Stats extends Component {
             <thead>
               <tr>
                 <th>Ranking</th>
-                <th>Username     </th>
-                <th>Category             </th>
+                <th>Username</th>
+                <th>Category</th>
                 <th>Score</th>
               </tr>
             </thead>
-            <tbody id='tableBody'>
-              {/* {leaderBoard} */}
+            <tbody>
+              {leaderBoard}
             </tbody>
           </Table>
         </div>
