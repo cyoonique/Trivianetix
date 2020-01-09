@@ -8,11 +8,20 @@ profile.get('/profile.css', (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, '../../profile.css'));
 });
 
+profile.get('/getLeaders', userModelController.findLeaders, (req, res) => {
+  res.status(200).json({
+    ranks: res.locals.ranks,
+    usernames: res.locals.usernames,
+    categories: res.locals.categories,
+    scores: res.locals.scores
+  });
+})
+
 profile.post('/', userModelController.findUser, cookieController.setCookie, (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, "../../client/profile.html"));
 });
 
-profile.put('/update', userModelController.updateUser, userModelController.findLeaders, userModelController.compareLeaders, (req, res) => {
+profile.put('/update', userModelController.updateUser,userModelController.findLeaders, userModelController.compareLeaders, (req, res) => {
   res.sendStatus(200);
 });
 

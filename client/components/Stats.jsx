@@ -4,10 +4,19 @@ import Table from 'react-bootstrap/Table';
 
 class Stats extends Component {
   componentDidMount() {
+    //leaderboard
+    fetch(`/profile/getLeaders`)
+    .then(res => res.json())
+    .then(data => {
+      console.log('data for leaderboard:', data);
+      // TODO: pull leaderBoard data from MongoDB
+    });
+
+    //d3 graph
     fetch(`/Trivia/${this.props.username}`)
     .then(res => res.json())
     .then((res)=> {
-      console.log(res)
+      // console.log(res)
       let models = [];
       let model1 = {"model_name": "Your scores" };
       let model2 = {"model_name": "High School"}; 
@@ -33,7 +42,7 @@ class Stats extends Component {
         model4[`field${i + 1}`] = userCategory;
       }
       models.push(model1, model2, model3, model4)
-      console.log(models)
+      // console.log(models)
       this.drawChart(models)
     })
     // .then(()=> {
@@ -62,8 +71,11 @@ class Stats extends Component {
     //     "field3":10,
     //   }];
     //   this.drawChart(models)})
-    .catch(err => console.log(err))
+    .catch(err => console.log(err));
 
+    
+      
+    
     // fetch(`/getGraphData/${chosentopic}/HighSchool`)
     // .then(res => res.json)
     // .catch(err => console.log(err))
@@ -284,20 +296,20 @@ class Stats extends Component {
     let gameMode = this.props.gameMode;
     let graph = <div id='graph'></div>;
     let scoreBoard = <p>Your All-Time Score: {percentageRight}%<br/>Your Score For This Game: {PercentageRightForThisGame}%</p>;
-    console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
+    // console.log(`questionsPosed: ${questionsPosed}, questionsRight: ${questionsRight}, percentageRight: ${percentageRight}, PercentageRightForThisGame: ${PercentageRightForThisGame}`);
     
-    // TODO: pull leaderBoard data from MongoDB
-    const leaderBoard = [];
-    for (let i = 1; i <= 10; i += 1) {
-      let eachLeader = (
-        <tr>
-          <td>{i}</td>
-          <td>Cat</td>
-          <td>{i * 10}</td>
-        </tr>
-      );
-      leaderBoard.push(eachLeader);
-    }
+    // // TODO: pull leaderBoard data from MongoDB
+    // const leaderBoard = [];
+    // for (let i = 1; i <= 10; i += 1) {
+    //   let eachLeader = (
+    //     <tr>
+    //       <td>{i}</td>
+    //       <td>Cat</td>
+    //       <td>{i * 10}</td>
+    //     </tr>
+    //   );
+    //   leaderBoard.push(eachLeader);
+    // }
 
     return (
       <div>
@@ -311,11 +323,12 @@ class Stats extends Component {
               <tr>
                 <th>Ranking</th>
                 <th>Username     </th>
+                <th>Category             </th>
                 <th>Score</th>
               </tr>
             </thead>
-            <tbody>
-              {leaderBoard}
+            <tbody id='tableBody'>
+              {/* {leaderBoard} */}
             </tbody>
           </Table>
         </div>
