@@ -63,10 +63,9 @@ userModelController.findStats = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
+// Getting trivia questions depending on the category selected passed in params.url
 userModelController.questions = async (req, res, next) => {
-  console.log(req.params.url);
   const url = 'https://opentdb.com/api.php?amount=10&category=' + req.params.url + '&type=multiple';
-  // const url = req.params.url;
   await fetch(url)
     .then(response => response.json())
     .then(data => {
@@ -78,23 +77,23 @@ userModelController.questions = async (req, res, next) => {
 
 // Updating tables after finishing a game
 userModelController.updateUser = (req, res, next) => {
-  const { username, correctAnswers, score, gamesPlayed, url } = req.body;
+  const { username, totalCorrectAnswers, currentCorrectAnswers, score, gamesPlayed, url } = req.body;
 
-  // Updating gamesPlayed and correct answer fromn userfix
+  // Updating rows: games_played and correct_answers from userfix table
   let sql = `
     UPDATE usersfix
-    SET games_played = '${gamesPlayed}', correct_answers = '${correctAnswers}'
+    SET games_played = '${gamesPlayed}', correct_answers = '${totalCorrectAnswers}'
     WHERE username = '${username}'
   `;
    db.query(sql)
     .then(response => console.log(response))
     .catch(err => console.log(err));
 
-  // Inserting a row into gamesPlayed table
+  // Inserting a row into gamesplayed table
   sql = `
     INSERT INTO gamesplayed
     (username_fk, category_fk, correct_answers)
-    VALUES ('${username}', ${url}, ${correctAnswers})
+    VALUES ('${username}', ${url}, ${currentCorrectAnswers})
   `;
    db.query(sql)
     .then(response => console.log(response))
@@ -115,29 +114,118 @@ userModelController.deleteUser = async (req, res, next) => {
 };
 
 ///run this query to get average score of one educational level for one topic
-userModelController.getGraphData = async (req, res, next) => {
-  const topic = req.params.topic;
-  const educationLevel = req.params.education;
-  const graphQuery = `
-  Select ...`
+userModelController.getGraphData = async(req, res, next) => {
+  const { username } = req.params;
 
-  await db.query(graphQuery)
+  // Getting all the categories from the database
+  let row;
+  let sql = `SELECT id FROM category`;
+  await db.query(sql)
   .then(response => {
-    let gamesPlayed = 0;
-    let TotalScore = 0;
+    row = response.rows;
+  }).catch(err => console.log(err));
 
-    for (let i = 0; i < response.rows.length; i += 1) {
-      let row = rows[i];
-      gamesPlayed += 1;
-      let numberCorrect = row.correctAnswers * 10;
-      TotalScore += numberCorrect;
-    }
-    let averageScore = TotalScore / gamesPlayed;
-    return res.locals.averageScore = averageScore;
-  })
+  // Getting score per category of username requested, 
+  // response sent as res.locals.currentuser[category]
+  let category;
+  let count;
+  let obj = {};
+  for (let i = 0; i < row.length; i++){
+    category = row[i].id;
+    sql = `
+      SELECT SUM(correct_answers), COUNT(*) 
+      FROM gamesplayed 
+      WHERE username_fk = '${username}' and category_fk = ${category}
+   `;
+    await db.query(sql)
+    .then(resp => {
+      count = Number(resp.rows[0].count);
+      // Case no games played in that category
+      if (count === 0) {
+        obj[category] = 0
+        // res.locals.currentuser = obj;
+      }
+      else {  
+        obj[category] = (resp.rows[0].sum/(count*10))*100;
+      }
+      
+    }).catch(err => console.log(err));
+  }
+  res.locals.currentuser = obj;
+
+  // console.log("score: ",res.locals.currentuser);
+
+  // Getting score per category of all games played except the username, 
+  // response sent as res.locals.currentuser[education][category]
+  category;
+  count;
+  let education = ['SE','BA','MA'];
+  // obj = {};
+  let obj1 = {};
+  for (let j = 0; j < education.length; j++){
+    obj = {}
+  for (let i = 0; i < row.length; i++){
+    category = row[i].id;
+    sql = `
+    SELECT SUM(correct_answers), COUNT(*) 
+    FROM gamesplayed 
+    WHERE category_fk = ${category} AND username_fk in 
+      (
+        SELECT username 
+        FROM usersfix 
+        WHERE education = '${education[j]}' AND username != '${username}'
+      )
+   `;
+    await db.query(sql)
+    .then(resp => {
+      count = Number(resp.rows[0].count);
+      console.log('in second query count =', count)
+      // Case no games played in that category
+      if (count === 0) {
+        obj[category] = 0        
+      }
+      else {  
+        obj[category] = (resp.rows[0].sum/(count*10))*100;
+      }
+    }).catch(err => console.log(err));
+  }
+     obj1[education[j]] = obj;    
+  }
+  res.locals.users = obj1;
+  console.log("currentuser: ",res.locals.currentuser, "users: ", res.locals.users);
+  return next();
+};
 
 
-return next();
+userModelController.findLeaders = (req, res, next) => {
+  const { username, totalCorrectAnswers, currentCorrectAnswers, score, gamesPlayed, url } = req.body;
+  console.log('got into findLeaders');
+  // const topic = req.params.topic;
+  // const username = req.params.username;
+  // const { id, username_fk, category_fk, score } = req.body;
+  const text = `
+  SELECT *
+  FROM leaderboard
+  `;
+  db.query(text)
+    .then (response =>{
+      const usernames = [];
+      const categories = [];
+      const scores = [];
+      for (let i = 0; i < response.rows.length; i++){
+        let row = response.rows[i];
+        usernames.push(row.username_fk);
+        categories.push(row.category_fk);
+        scores.push(row.score);
+      }
+      //console.log ('response.rows in leaderboard',response.rows)
+      res.locals.usernames = usernames;
+      res.locals.categories = categories;
+      res.locals.scores = scores;
+      //console.log('response from findLeaders: ', response);
+    })
+    .catch(err => console.log(err))
+    return next();
 }
 
 module.exports = userModelController;

@@ -178,7 +178,8 @@ class App extends Component {
       },
       body: JSON.stringify({
         username: this.state.username,
-        correctAnswers: this.state.stats.correctAnswers,
+        totalCorrectAnswers: this.state.stats.correctAnswers,
+        currentCorrectAnswers: this.state.correctResponses.length,
         url: this.state.url,
         score: this.state.score,
         gamesPlayed: this.state.stats.gamesPlayed,
@@ -198,7 +199,7 @@ class App extends Component {
         {!this.state.gameMode ?
           <React.Fragment>
             <UserInfo username={this.state.username} gameMode={this.state.gameMode} />
-            <Stats stats={this.state.stats} correctResponses={this.state.correctResponses} gameMode={this.state.gameMode} />
+            <Stats username={this.state.username} stats={this.state.stats} correctResponses={this.state.correctResponses} gameMode={this.state.gameMode} />
 
             <select className="custom-select" onChange={this.onHandleClick}>
               <option value="9" className="topicButton">General Knowledge</option>

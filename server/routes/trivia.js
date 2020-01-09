@@ -16,10 +16,10 @@ trivia.get('/:username/:url', userModelController.findStats, userModelController
 });
 
 
-trivia.get('/:username/:topic/:education', userModelController.getGraphData, (req, res) => {
-    console.log('req.params: ', req.params);
+trivia.get('/:username', userModelController.getGraphData, (req, res) => {
     res.status(200).json({
-        averageScore: res.locals.averageScore,
+        currentuser: res.locals.currentuser,
+        users: res.locals.users,
     });
 })
 module.exports = trivia;
